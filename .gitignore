@@ -1,0 +1,16 @@
+.idea/
+target/
+tempdir/
+*.cmd
+classes/linux-64/data/
+classes/linux-64/groups/
+classes/linux-64/recordings/
+classes/linux-64/static/
+classes/win-32/data/
+classes/win-32/groups/
+classes/win-32/recordings/
+classes/win-32/static/
+classes/win-64/data/
+classes/win-64/groups/
+classes/win-64/recordings/
+classes/win-64/static/

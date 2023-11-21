@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<plugin>
+    <author>Ignite Realtime</author>
+    <class>org.ifsoft.llama.openfire.LLaMA</class>
+    <name>${project.name}</name>
+    <description>${project.description}</description>
+    <version>${project.version}</version>
+    <licenseType>Apache 2.0</licenseType>
+    <date>2023-11-30</date>
+    <minServerVersion>4.7.5</minServerVersion>
+
+   <adminconsole> 
+        <tab id="tab-webclients" name="${admin.sidebar.webclients.name}" description="${admin.sidebar.webclients.description}" url="llama-settings.jsp">
+            <sidebar id="tab-llama" name="${plugin.title}" description="${plugin.description}">
+				<item id="llama-settings" name="${config.page.settings}" description="${config.page.settings.description}" url="llama-settings.jsp"/>						
+				<item id="llama-chat" name="${config.page.test}" description="${config.page.test.description}" url="llama-chat.jsp"/> 			
+            </sidebar>
+        </tab>			
+    </adminconsole> 
+</plugin>

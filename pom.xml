@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>plugins</artifactId>
+        <groupId>org.igniterealtime.openfire</groupId>
+        <version>4.7.5</version>
+    </parent>
+    
+    <groupId>org.igniterealtime.openfire</groupId>
+    <artifactId>llama</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    
+    <properties>      
+    </properties>    
+
+    <name>LLaMA</name>
+    <description>AI Inference engine for Openfire</description>
+    <build>
+        <sourceDirectory>src/java</sourceDirectory> 
+        <plugins> 
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.7</version>
+                <executions>
+                <execution>
+                    <id>copy-win-64</id>
+                    <phase>prepare-package</phase>
+                    <goals>
+                    <goal>copy-resources</goal>
+                    </goals>
+
+                    <configuration>
+                    <overwrite>true</overwrite>                 
+                    <outputDirectory>classes/win-64</outputDirectory>
+                    <resources>
+                        <resource>
+                        <directory>src/root</directory>
+                        </resource>
+                    </resources>
+                    </configuration>
+                </execution>				
+                <execution>
+                    <id>copy-linux-64</id>
+                    <phase>prepare-package</phase>
+                    <goals>
+                    <goal>copy-resources</goal>
+                    </goals>
+
+                    <configuration>
+                    <overwrite>true</overwrite>                 
+                    <outputDirectory>classes/linux-64</outputDirectory>
+                    <resources>
+                        <resource>
+                        <directory>src/root</directory>
+                        </resource>
+                    </resources>
+                    </configuration>
+                </execution>                
+               </executions>
+            </plugin>            
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-jspc-maven-plugin</artifactId>
+            </plugin>			           
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.igniterealtime.openfire</groupId>
+            <artifactId>xmppserver</artifactId>
+            <version>${openfire.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>net.sf.json-lib</groupId>
+            <artifactId>json-lib</artifactId>
+            <version>0.8</version>
+        </dependency>  
+
+  		<dependency>
+  			<groupId>joda-time</groupId>
+  			<artifactId>joda-time</artifactId>
+  			<version>1.6</version>
+  		</dependency>
+		
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>2.0.1.Final</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>5.2.4.Final</version>
+		</dependency>	
+
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.15</version>
+		</dependency>
+	
+    </dependencies>   
+    
+    <repositories>
+        <repository>
+            <id>igniterealtime</id>
+            <name>Ignite Realtime Repository</name>
+            <url>https://igniterealtime.org/archiva/repository/maven/</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <!-- Typically used to retrieve Maven plugins that are used by this project.
+             This apparently is also used to botain the dependencies _used by_ these
+             plugins (such as the openfire-plugin-assembly-descriptor, needed to
+             package the project as an Openfire plugin!) -->
+        <pluginRepository>
+            <id>igniterealtime</id>
+            <name>Ignite Realtime Repository</name>
+            <url>https://igniterealtime.org/archiva/repository/maven/</url>
+        </pluginRepository>
+    </pluginRepositories>    
+
+</project>
