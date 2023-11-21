@@ -16,12 +16,12 @@
 <li>
 <ul>
 <li><a href="#llama">LLaMA</a></li>
+<li><a href="#ci-build-status">CI Build Status</a></li>
 <li><a href="#overview">Overview</a></li>
 <li><a href="#known-issues">Known Issues</a></li>
 <li><a href="#installation">Installation</a></li>
 <li><a href="#configuration">Configuration</a></li>
 <li><a href="#how-to-use">How to use</a></li>
-<li><a href="#further-information">Further information</a></li>
 </ul>
 </li>
 </ul>
@@ -31,35 +31,48 @@
   <div class="stackedit__right">
     <div class="stackedit__html">
       <h2 id="llama">LLaMA</h2>
-<p>AI Inference engine for Openfire</p>
+<p>AI Inference engine for Openfire using LLaMA.<br>
+This plugin is a wrapper to llama.cpp server binary. It uses the HTTP API to create a chatbot in Openfire which will engage in XMPP chat and groupchat conversations.</p>
+<h2 id="ci-build-status">CI Build Status</h2>
+<p><a href="https://github.com/igniterealtime/openfire-llama-plugin/actions"><img src="https://github.com/igniterealtime/openfire-llama-plugin/workflows/Java%20CI/badge.svg" alt="Build Status"></a></p>
 <h2 id="overview">Overview</h2>
-<img src="https://igniterealtime.github.io/openfire-llama-plugin/llama-summary.png">
+<img src="https://igniterealtime.github.io/openfire-llama-plugin/llama-chat.png">
 <h2 id="known-issues">Known Issues</h2>
 <p>This version has embedded binaries for only Linux 64 and Windows 64.</p>
 <h2 id="installation">Installation</h2>
 <p>copy llama.jar to the plugins folder</p>
 <h2 id="configuration">Configuration</h2>
-<img src="https://user-images.githubusercontent.com/110731/259781570-5a9a2918-ca51-4bed-80f0-b50db7aa63cb.png">
+<img src="https://igniterealtime.github.io/openfire-llama-plugin/llama-settings.png">
 <h3 id="enable-llama">Enable LLaMA</h3>
 <p>Enables or disables the plugin. Reload plugin or restart Openfire if this or any of the settings other settings are changed.</p>
-<h3 id="enable-muc-groupchat-support">Enable MUC (Groupchat) Support</h3>
-<p>If this option is not enabled, LLaMA will only use a single parent group called <em>public</em>. Subgroups will be enabled and all participants will have <em>operator</em> privileges. They can publish media streams and manage the meeting. See LLaMA documentation for full details. Both anonymous and  authenticated XMPP sessions can join a public group and all subgroups.</p>
-<p>To join a public subgroup called my-meeting, with the llama web client, use <a href="http://your-openfire-server:7070/llama/?room=public/my-meeting&amp;username=your-user-name">http://your-openfire-server:7070/llama/?room=public/my-meeting&amp;username=your-user-name</a>.</p>
-<p>If this option is enabled, then LLaMA LLaMA becomes integrated with Openfire. Openfire MUC group-chat rooms can be used as LLaMA groups in addition to the default public group. Authentication is enabled and only authenticated XMPP sessions can join a LLaMA group subject to the room configuration. For example, member only MUC rooms will disable allow-anonymous in LLaMA and only room member xmpp sessions will be allowed to join the LLaMA group.</p>
-<p>In this mode, users will require an authenticated XMPP session to join an Openfire MUC groupchat room. See Pade client or the LLaMA plugin for ConverseJS for more details.</p>
-<p>Once a user has joined with at least presenter permissions, they can invite an external user with an invitation token.</p>
-<p>To join an MUC groupchat room called lobby with the LLaMA web client as user <em>fred</em> using invitation token xxxxxxxxxxx, use <a href="http://localhost:7070/llama?token=xxxxxxxxxxx&amp;room=public&amp;username=fred">http://localhost:7070/llama?token=xxxxxxxxxxx&amp;room=public&amp;username=fred</a></p>
 <h3 id="usernamepassword">Username/Password</h3>
-<p>This is Openfire username/password for the user that will have LLaMA admin permissions to view stream stats and join any meeting. By default the user will be “llama-user” and the password witll be a random string. If you are using ldap or your Openfire user manager is in read-only mode and a new user cannot be created, then you must create the user and specify the username and password here…</p>
-<h3 id="ip-addresstcp-port">IP Address/TCP Port</h3>
-<p>This is the internal IP address of the network card to which you want LLaMA to bind to. LLaMA is not exposed outside of the internal network and can only be accessed via Openfire using an XMPP client connection. By default port 6060 will be used. However any other internal port can be used. Use <a href="http://ip-address">http://ip-address</a>:port on the internal network to confirm llama is up and running.</p>
-<h3 id="udp-port-minmax">UDP Port Min/Max</h3>
-<p>This limits the pool of ephemeral ports that ICE UDP connections can allocate from. This affects both host candidates, and the local address of server reflexive candidates.</p>
-<h3 id="turn-ip-addressport">TURN IP Address/Port</h3>
-<p>This is the public IP address of the FQDN of your openfire server that will be exposed to client web browsers when they ask for ICE canndidates during media negotiation. Make sure the port specified is opened for TCP and UDP. llama will bind its interrnal TURN server to this port. If LLaMA is behind NAT and your NAT device doesn’t support hairpinning, then you must use an external TURN server.</p>
-<h3 id="external-url">External URL</h3>
-<p>This is the base public URL (minus path) that is used to access llama externally by clients. The host name should resolve to the IP address specified for TURN above otherwise, ensure you have a proxy or http forwarding rule that ensures this happens.</p>
+<p>This is Openfire username/password for the user that will act as a chatbot for LLaMA. By default the user will be “llama” and the password witll be a random string. If you are using ldap or your Openfire user manager is in read-only mode and a new user cannot be created, then you must create the user and specify the username and password here…</p>
+<h3 id="alias">Alias</h3>
+<p>Set an alias for the model. The alias will be returned in chat responses.</p>
+<h3 id="port">Port</h3>
+<p>Set the port to listen. Default: 8080</p>
+<h3 id="model-url">Model URL</h3>
+<p>Specify the path to the LLaMA model file to be downloaded and used. Default is <a href="https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF/resolve/main/llama-2-7b-chat.Q2_K.gguf?download=true">https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF/resolve/main/llama-2-7b-chat.Q2_K.gguf?download=true</a><br>
+The first time the plugin starts, it will download this file and cache in OPENFIRE_HOME/llama folder.</p>
+<h3 id="system-prompt">System Prompt</h3>
+<p>Prompting large language models like Llama 2 is an art and a science. Set your system prompt here. Default is “You are a helpful assistant”</p>
+<h3 id="predictions">Predictions</h3>
+<p>Set the maximum number of tokens to predict when generating text. Note: May exceed the set limit slightly if the last token is a partial multibyte character. When 0, no tokens will be generated but the prompt is evaluated into the cache. Default is 256</p>
+<h3 id="temperature">Temperature</h3>
+<p>Adjust the randomness of the generated text (default: 0.5).</p>
+<h3 id="top-k-sampling">Top K Sampling</h3>
+<p>Limit the next token selection to the K most probable tokens (default: 40).</p>
+<h3 id="top-p-sampling">Top P Sampling</h3>
+<p>Limit the next token selection to a subset of tokens with a cumulative probability above a threshold P (default: 0.95).</p>
 <h2 id="how-to-use">How to use</h2>
+<img src="https://igniterealtime.github.io/openfire-llama-plugin/llama-test.png">
+To confirm that llama.cpp is working, use the demo web app to test.
+The plugin will create an Openfire users called llama (by default). The user can be engaged with in chat or groupchats from any XMPP client application like Spark, Converse or Conversations.
+<h3 id="chat">Chat</h3>
+<p>Add llama as a contact and start a chat conversation</p>
+<h3 id="groupchat">Groupchat</h3>
+<p>Start as chat message with the LLaMA username (llama) and LLaMA will join the groupchat and respond to the message typed. Not that this only works with groupchats hosted in your Openfire server. Federation is not supported.</p>
+
     </div>
   </div>
 </body>

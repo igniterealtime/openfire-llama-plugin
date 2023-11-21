@@ -52,7 +52,10 @@ Limit the next token selection to the K most probable tokens (default: 40).
 Limit the next token selection to a subset of tokens with a cumulative probability above a threshold P (default: 0.95).
 
 ## How to use
-The plugin will create an Openfire users called llama (by default). The user can be engaged with in chat or groupchats.
+<img src="https://igniterealtime.github.io/openfire-llama-plugin/llama-test.png" />
+To confirm that llama.cpp is working, use the demo web app to test.
+The plugin will create an Openfire users called llama (by default). The user can be engaged with in chat or groupchats from any XMPP client application like Spark, Converse or Conversations.
+
 
 ### Chat
 Add llama as a contact and start a chat conversation
