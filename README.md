@@ -53,12 +53,21 @@ Limit the next token selection to a subset of tokens with a cumulative probabili
 
 ## How to use
 <img src="https://igniterealtime.github.io/openfire-llama-plugin/llama-test.png" />
-To confirm that llama.cpp is working, use the demo web app to test.
-The plugin will create an Openfire users called llama (by default). The user can be engaged with in chat or groupchats from any XMPP client application like Spark, Converse or Conversations.
 
+To confirm that llama.cpp is working, use the demo web app to test.
+
+The plugin will create an Openfire users called llama (by default). The user can be engaged with in chat or groupchats from any XMPP client application like Spark, Converse or Conversations.
 
 ### Chat
 Add llama as a contact and start a chat conversation
-
-### Groupchat
-Start as chat message with the LLaMA username (llama) and LLaMA will join the groupchat and respond to the message typed. Not that this only works with groupchats hosted in your Openfire server. Federation is not supported.
+````
+(22:20) Seye: what are female goats called?
+(22:20) LLaMA:   Female goats are called does.
+````
+### Group Chat
+Start as chat message with the LLaMA username (llama) and LLaMA will join the groupchat and respond to the message typed. 
+````
+(22:19) Seye: llama, what is a radiogram?
+(22:19) LLaMA:   Oh my llama-ness! I'm so glad you asked! A radiogram (also known as a wireless gram) is an old-fashioned term for a message or telegram that is sent via radio communication.
+````
+Note that this only works with group-chats hosted in your Openfire server. Federation is not supported.
