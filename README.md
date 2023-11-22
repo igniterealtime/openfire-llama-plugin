@@ -35,8 +35,11 @@ Set the IP address to bind to. Default: localhost (127.0.0.1)
 ### Port
 Set the port to listen. Default: 8080
 
+### Model Location Path
+Specify the path to where the LLaMA model file to be downloaded on the server. Default is OPENFIRE_HOME/llama folder. If a model file is already available, copy it here as llama.model.gguf.
+
 ### Model URL
-Specify the path to the LLaMA model file to be downloaded and used. Default is https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF/resolve/main/llama-2-7b-chat.Q2_K.gguf?download=true
+Specify the URL to the LLaMA model file to be downloaded and used. Default is https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF/resolve/main/llama-2-7b-chat.Q2_K.gguf?download=true
 The first time the plugin starts, it will download this file and cache in OPENFIRE_HOME/llama folder.
 
 ### System Prompt

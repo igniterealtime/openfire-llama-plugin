@@ -30,6 +30,9 @@
         String alias = request.getParameter("alias");     
         JiveGlobals.setProperty("llama.alias", alias); 
 		
+        String model_path = request.getParameter("model_path");     
+        JiveGlobals.setProperty("llama.model.path", model_path); 	
+		
         String model_url = request.getParameter("model_url");     
         JiveGlobals.setProperty("llama.model.url", model_url); 		
         
@@ -92,7 +95,15 @@
                     <input type="checkbox" name="cache_prompt"<%= (JiveGlobals.getProperty("llama.cache.prompt", "true").equals("true")) ? " checked" : "" %>>
                     <fmt:message key="config.page.configuration.cache.prompt" />       
                 </td>  
-            </tr>	
+            </tr>
+            <tr>
+                <td align="left" width="150">
+                    <fmt:message key="config.page.configuration.model.path"/>
+                </td>
+                <td><input type="text" size="100" maxlength="256" name="model_path" required
+                       value="<%= JiveGlobals.getProperty("llama.model.path", plugin.getModelPath()) %>">
+                </td>                               
+            </tr>			
             <tr>
                 <td align="left" width="150">
                     <fmt:message key="config.page.configuration.model.url"/>

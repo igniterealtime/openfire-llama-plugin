@@ -127,6 +127,10 @@ public class LLaMA implements Plugin, PropertyEventListener, ProcessListener, MU
         return "8080";
     }
 
+    public static String getModelPath() {
+        return (JiveGlobals.getHomeDirectory() + File.separator + "llama").replace("\\", "/");
+    }
+	
     public static String getModelUrl() {
         return "https://huggingface.co/TheBloke/Llama-2-7b-Chat-GGUF/blob/main/llama-2-7b-chat.Q5_K_M.gguf";
     }
@@ -200,7 +204,7 @@ public class LLaMA implements Plugin, PropertyEventListener, ProcessListener, MU
     }
 
 	private void setupLLaMA(File pluginDirectory) {
-		final String path = (JiveGlobals.getHomeDirectory() + File.separator + "llama").replace("\\", "/");		
+		final String path = JiveGlobals.getProperty("llama.model.path", getModelPath());		
 		final String filePath = path + File.separator + "llama.model.gguf";		
 	    final File folder = new File(path);			
 		

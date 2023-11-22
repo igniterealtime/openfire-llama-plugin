@@ -54,6 +54,8 @@ This plugin is a wrapper to llama.cpp server binary. It uses the HTTP API to cre
 <p>Set the IP address to bind to. Default: localhost (127.0.0.1)</p>
 <h3 id="port">Port</h3>
 <p>Set the port to listen. Default: 8080</p>
+<h3 id="model-path">Model Location Path</h3>
+<p>Specify the path to where the LLaMA model file to be downloaded on the server. Default is OPENFIRE_HOME/llama folder. If a model file is already available, copy it here as llama.model.gguf.</p>
 <h3 id="model-url">Model URL</h3>
 <p>Specify the path to the LLaMA model file to be downloaded and used. Default is <a href="https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF/resolve/main/llama-2-7b-chat.Q2_K.gguf?download=true">https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF/resolve/main/llama-2-7b-chat.Q2_K.gguf?download=true</a><br>
 The first time the plugin starts, it will download this file and cache in OPENFIRE_HOME/llama folder.</p>
