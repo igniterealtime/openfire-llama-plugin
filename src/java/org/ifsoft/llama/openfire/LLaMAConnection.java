@@ -85,7 +85,7 @@ public class LLaMAConnection extends VirtualConnection
 			router = new SessionPacketRouter( session );
 			route("<presence />");
 			
-			Log.error("xmpp session created for " + username);			
+			Log.info("xmpp session created for " + username);			
 		} catch (Exception e) {
 			Log.error("XMPPConnection  error", e);
 		}		
@@ -95,6 +95,7 @@ public class LLaMAConnection extends VirtualConnection
 		exec.execute(new Runnable() {
 			public void run() {
 				long threadId = Thread.currentThread().getId()% LLaMA.numThreads;
+	
 				final String alias = JiveGlobals.getProperty("llama.alias", "LLaMA");
 				/*
 					"system_prompt": {
@@ -119,7 +120,7 @@ public class LLaMAConnection extends VirtualConnection
 				
 				JSONObject testData = new JSONObject();
 				testData.put("system_prompt", systemPrompt);
-				testData.put("prompt", "[INST]" + prompt + "[/INST]");				
+				testData.put("prompt", "<s>[INST]" + prompt + "[/INST]</s>");				
 				testData.put("n_predict", JiveGlobals.getIntProperty("llama.predictions", 256));
 				testData.put("stream", true);
 				testData.put("cache_prompt", JiveGlobals.getBooleanProperty("llama.cache.prompt", true));				
@@ -303,7 +304,8 @@ public class LLaMAConnection extends VirtualConnection
 
 			rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
-			if (requestor != null) replyState("active", requestor, chatType);			
+			if (requestor != null) replyState("active", requestor, chatType);
+			long seq = 0;
 			
 			while ((line = rd.readLine()) != null) {
 				Log.debug("getJson - stream\n" + line);				
@@ -325,7 +327,12 @@ public class LLaMAConnection extends VirtualConnection
 							
 						} else {
 							result.append(content);
-							if (requestor != null) replyState("composing", requestor, chatType);							
+							
+							if (requestor != null) {
+								replyState("composing", requestor, chatType);
+								replyRtt(content, requestor, chatType, seq);
+								seq++;	
+							}
 						}
 					} else {	// end of text stream
 						String msg = result.toString();
@@ -358,6 +365,25 @@ public class LLaMAConnection extends VirtualConnection
 		
 		XMPPServer.getInstance().getRoutingTable().routePacket(requestor, newMessage, true);				
 	}
+	
+	private void replyRtt(String msg, JID requestor, Message.Type chatType, long seq) {
+		Log.debug("replyRtt from LLaMA " + requestor + " " + msg);	
+		
+		Message newMessage = new Message();
+		newMessage.setFrom(username + "@" + domain + "/" + remoteAddr);
+		newMessage.setTo(requestor);		
+		newMessage.setType(chatType);
+
+		Element rtt = DocumentHelper.createElement(QName.get("rtt", "urn:xmpp:rtt:0"));
+		rtt.addAttribute("seq", String.valueOf(seq));
+		if (seq == 0) rtt.addAttribute("event", "new");
+		
+		Element t = rtt.addElement("t");
+		t.setText(msg);
+        newMessage.addExtension(new PacketExtension(rtt));		
+		
+		XMPPServer.getInstance().getRoutingTable().routePacket(requestor, newMessage, true);	
+	}	
 	
 	private void replyChat(String msg, JID requestor, Message.Type chatType) {
 		Log.debug("replyChat from LLaMA " + requestor + "\n" + msg);	

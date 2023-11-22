@@ -284,6 +284,7 @@ public class LLaMA implements Plugin, PropertyEventListener, ProcessListener, MU
 
         if (llamaExePath != null && llamaEnabled && !isNull(modelUrl))	{
             createLLaMAUser();
+			loginLLaMAUser(false);				
 						
 			try {
 				final String llamaHost = JiveGlobals.getProperty("llama.host", getIpAddress());					
@@ -292,8 +293,7 @@ public class LLaMA implements Plugin, PropertyEventListener, ProcessListener, MU
 				llamaThread = Spawn.startProcess(llamaExePath + " " + params, new File(llamaHomePath), this);
 				
 				Thread.sleep(1000);
-
-				loginLLaMAUser(false);				
+			
 				Log.info("LLaMA enabled " + llamaExePath + " " + params);				
 			}
 			catch (Exception e)
