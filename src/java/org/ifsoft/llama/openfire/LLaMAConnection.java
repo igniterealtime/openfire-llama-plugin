@@ -54,7 +54,6 @@ public class LLaMAConnection extends VirtualConnection
     private ConnectionConfiguration configuration;	
     private ConnectionType connectionType;	
 	private String username;
-	private String port;
 	private AuthToken authToken = null;
     private LocalClientSession session;	
     private ExecutorService exec = Executors.newFixedThreadPool(LLaMA.numThreads);	
@@ -63,11 +62,11 @@ public class LLaMAConnection extends VirtualConnection
 	private final String hostname = XMPPServer.getInstance().getServerInfo().getHostname();
 
     public String remoteAddr;	
-	
+    public String remoteUrl;	
 
-    public LLaMAConnection(String username, String port) {
+    public LLaMAConnection(String username, String remoteUrl) {
 		this.username = username;
-		this.port = port;
+		this.remoteUrl = remoteUrl;
 		this.remoteAddr = "llama-" + System.currentTimeMillis();
 		
 		try {
@@ -282,7 +281,7 @@ public class LLaMAConnection extends VirtualConnection
 		String password = JiveGlobals.getProperty("llama.password", "llama");		
 		String auth = username + ":" + password;
 		String authHeaderValue = "Basic " + Base64.getEncoder().encodeToString(auth.getBytes(StandardCharsets.UTF_8));
-		String uri = "http://" + llamaHost + ":" + port + urlToRead;
+		String uri = remoteUrl + urlToRead;
 		
 		Log.info("getJson from LLaMA " + requestor + " " + uri + "\n" + data);
 		

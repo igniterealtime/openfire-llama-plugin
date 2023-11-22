@@ -31,10 +31,16 @@
 <jsp:useBean id="webManager" class="org.jivesoftware.util.WebManager"  />
 <% 
     webManager.init(request, response, session, application, out ); 
-    
-    String port = JiveGlobals.getProperty("llama.port", "8080");  
-	String host = JiveGlobals.getProperty("llama.host", LLaMA.getIpAddress());		
-    String url = "http://" + host + ":" + port;    
+
+	boolean llamaHosted = JiveGlobals.getBooleanProperty("llama.hosted", true);	    
+	String url = JiveGlobals.getProperty("llama.hosted.url", LLaMA.getHostedUrl());
+	
+	if (!llamaHosted) {
+		final String llamaHost = JiveGlobals.getProperty("llama.host", LLaMA.getIpAddress());	
+		final String llamaPort = JiveGlobals.getProperty("llama.port", LLaMA.self.getPort());
+		
+		url = "http://" + llamaHost + ":" + llamaPort;			
+	}	
 %>
 
 <html>

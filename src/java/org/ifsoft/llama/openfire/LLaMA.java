@@ -105,6 +105,7 @@ public class LLaMA implements Plugin, PropertyEventListener, ProcessListener, MU
 
     public void initializePlugin(final PluginManager manager, final File pluginDirectory) {			
         boolean llamaEnabled = JiveGlobals.getBooleanProperty("llama.enabled", true);
+		boolean llamaHosted = JiveGlobals.getBooleanProperty("llama.hosted", true);	
 
         if (llamaEnabled) {
 			Log.info("llama enabled");				
@@ -114,7 +115,14 @@ public class LLaMA implements Plugin, PropertyEventListener, ProcessListener, MU
 			checkNatives(pluginDirectory);
 			executor = Executors.newCachedThreadPool();
 			startJSP(pluginDirectory);
-			setupLLaMA(pluginDirectory);
+			
+			if (llamaHosted) {
+				createLLaMAUser();	
+				loginLLaMAUser(true);
+				llamaConnection.handlePrediction("what is your name?", null, null);					
+			} else {
+				setupLLaMA(pluginDirectory);
+			}
 			self = this;					
 			
 			Log.info("llama initiated");
@@ -129,6 +137,10 @@ public class LLaMA implements Plugin, PropertyEventListener, ProcessListener, MU
 
     public static String getModelPath() {
         return (JiveGlobals.getHomeDirectory() + File.separator + "llama").replace("\\", "/");
+    }
+
+    public static String getHostedUrl() {
+        return "https://chatgpt.free-solutions.ch";
     }
 	
     public static String getModelUrl() {
@@ -280,10 +292,8 @@ public class LLaMA implements Plugin, PropertyEventListener, ProcessListener, MU
 				llamaThread = Spawn.startProcess(llamaExePath + " " + params, new File(llamaHomePath), this);
 				
 				Thread.sleep(1000);
-				
-				final String llamaUser = JiveGlobals.getProperty("llama.username", "llama");					
-				llamaConnection = new LLaMAConnection(llamaUser, llamaPort);
-				
+
+				loginLLaMAUser(false);				
 				Log.info("LLaMA enabled " + llamaExePath + " " + params);				
 			}
 			catch (Exception e)
@@ -295,6 +305,22 @@ public class LLaMA implements Plugin, PropertyEventListener, ProcessListener, MU
             Log.info("LLaMA disabled");
         }
     }
+	
+	private void loginLLaMAUser(boolean hosted) {
+		Log.info("LLaMA user login");
+			
+		final String llamaUser = JiveGlobals.getProperty("llama.username", "llama");
+		String llamaUrl = JiveGlobals.getProperty("llama.hosted.url", getHostedUrl());
+		
+		if (!hosted) {
+			final String llamaHost = JiveGlobals.getProperty("llama.host", getIpAddress());	
+			final String llamaPort = JiveGlobals.getProperty("llama.port", LLaMA.self.getPort());
+			
+			llamaUrl = "http://" + llamaHost + ":" + llamaPort;			
+		}
+		
+		llamaConnection = new LLaMAConnection(llamaUser, llamaUrl);		
+	}
 	
     private void checkNatives(File pluginDirectory) {
         try

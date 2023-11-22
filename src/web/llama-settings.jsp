@@ -29,7 +29,10 @@
 		
         String alias = request.getParameter("alias");     
         JiveGlobals.setProperty("llama.alias", alias); 
-		
+				
+        String hosted_url = request.getParameter("hosted_url");     
+        JiveGlobals.setProperty("llama.hosted.url", hosted_url); 
+
         String model_path = request.getParameter("model_path");     
         JiveGlobals.setProperty("llama.model.path", model_path); 	
 		
@@ -54,6 +57,9 @@
         String cache_prompt = request.getParameter("cache_prompt");
         JiveGlobals.setProperty("llama.cache.prompt", (cache_prompt != null && cache_prompt.equals("on")) ? "true": "false");     
 
+        String hosted = request.getParameter("hosted");
+        JiveGlobals.setProperty("llama.hosted", (hosted != null && hosted.equals("on")) ? "true": "false"); 
+		
         String enabled = request.getParameter("enabled");
         JiveGlobals.setProperty("llama.enabled", (enabled != null && enabled.equals("on")) ? "true": "false");  		
     }
@@ -83,11 +89,17 @@
                 <th colspan="2"><fmt:message key="config.page.settings.description"/></th>
             </tr>
             </thead>
-            <tbody>  
+            <tbody> 
             <tr>
                 <td nowrap  colspan="2">
                     <input type="checkbox" name="enabled"<%= (JiveGlobals.getProperty("llama.enabled", "true").equals("true")) ? " checked" : "" %>>
                     <fmt:message key="config.page.configuration.enabled" />       
+                </td>  
+            </tr>			
+            <tr>
+                <td nowrap  colspan="2">
+                    <input type="checkbox" name="hosted"<%= (JiveGlobals.getProperty("llama.hosted", "true").equals("true")) ? " checked" : "" %>>
+                    <fmt:message key="config.page.configuration.hosted" />       
                 </td>  
             </tr>
             <tr>
@@ -96,6 +108,14 @@
                     <fmt:message key="config.page.configuration.cache.prompt" />       
                 </td>  
             </tr>
+            <tr>
+                <td align="left" width="150">
+                    <fmt:message key="config.page.configuration.hosted.url"/>
+                </td>
+                <td><input type="text" size="100" maxlength="256" name="hosted_url" required
+                       value="<%= JiveGlobals.getProperty("llama.hosted.url", plugin.getHostedUrl()) %>">
+                </td>                               
+            </tr>			
             <tr>
                 <td align="left" width="150">
                     <fmt:message key="config.page.configuration.model.path"/>
