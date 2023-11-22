@@ -8,7 +8,7 @@ This plugin is a wrapper to llama.cpp server binary. It uses the HTTP API to cre
 
 ## Overview
 <img src="https://igniterealtime.github.io/openfire-llama-plugin/llama-chat.png" />
-https://igniterealtime.github.io/openfire-llama-plugin/llama-chat.webm
+https://igniterealtime.github.io/openfire-llama-plugin/llama-chat.mov
 
 ## Known Issues
 
