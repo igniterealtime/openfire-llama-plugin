@@ -23,6 +23,12 @@ copy llama.jar to the plugins folder
 ### Enable LLaMA
 Enables or disables the plugin. Reload plugin or restart Openfire if this or any of the settings other settings are changed.
 
+### Use Hosted LLaMA server
+This causes the plugin to use a remote llama.cpp server instead of the local server running Openfire
+
+### Hosted URL
+The URL to the remote llama.cpp server to be used. The plugin will assume that remote server has the correct LLaMA model and configuration. It will send requests to this URL.
+
 ### Username/Password
 This is Openfire username/password for the user that will act as a chatbot for LLaMA. By default the user will be “llama” and the password witll be a random string. If you are using ldap or your Openfire user manager is in read-only mode and a new user cannot be created, then you must create the user and specify the username and password here…
 

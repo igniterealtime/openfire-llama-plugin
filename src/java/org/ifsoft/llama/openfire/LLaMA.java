@@ -144,7 +144,7 @@ public class LLaMA implements Plugin, PropertyEventListener, ProcessListener, MU
     }
 	
     public static String getModelUrl() {
-        return "https://huggingface.co/TheBloke/Llama-2-7b-Chat-GGUF/blob/main/llama-2-7b-chat.Q5_K_M.gguf";
+        return "https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.1-GGUF/resolve/main/mistral-7b-instruct-v0.1.Q5_K_M.gguf?download=true";
     }
 
     public static String getSystemPrompt() {

@@ -46,6 +46,10 @@ This plugin is a wrapper to llama.cpp server binary. It uses the HTTP API to cre
 <img src="https://igniterealtime.github.io/openfire-llama-plugin/llama-settings.png">
 <h3 id="enable-llama">Enable LLaMA</h3>
 <p>Enables or disables the plugin. Reload plugin or restart Openfire if this or any of the settings other settings are changed.</p>
+<h3 id="enable-hosted">Use Hosted LLaMA server</h3>
+<p>This causes the plugin to use a remote llama.cpp server instead of the local server running Openfire. The plugin will assume that remote server has the correct LLaMA model and configuration. It will send requests to this URL.</p>
+<h3 id="hosted-url">Hosted URL</h3>
+<p>The URL to the remote llama.cpp server to be used.</p>
 <h3 id="usernamepassword">Username/Password</h3>
 <p>This is Openfire username/password for the user that will act as a chatbot for LLaMA. By default the user will be “llama” and the password witll be a random string. If you are using ldap or your Openfire user manager is in read-only mode and a new user cannot be created, then you must create the user and specify the username and password here…</p>
 <h3 id="alias">Alias</h3>
