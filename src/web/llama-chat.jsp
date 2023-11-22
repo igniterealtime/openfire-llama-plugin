@@ -20,6 +20,7 @@
 <%@ page import="org.jivesoftware.util.*,
          org.jivesoftware.openfire.*,
                  java.util.*,
+				 org.ifsoft.llama.openfire.*,
                  java.net.URLEncoder"                 
     errorPage="error.jsp"
 %>
@@ -31,8 +32,9 @@
 <% 
     webManager.init(request, response, session, application, out ); 
     
-    String port = JiveGlobals.getProperty("llama.port", "8080");    
-    String url = "http://localhost:" + port;    
+    String port = JiveGlobals.getProperty("llama.port", "8080");  
+	String host = JiveGlobals.getProperty("llama.host", LLaMA.getIpAddress());		
+    String url = "http://" + host + ":" + port;    
 %>
 
 <html>

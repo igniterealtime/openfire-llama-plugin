@@ -20,6 +20,9 @@
 
         String password = request.getParameter("password");     
         JiveGlobals.setProperty("llama.password", password);   
+
+        String host = request.getParameter("host");     
+        JiveGlobals.setProperty("llama.host", host); 
         
         String port = request.getParameter("port");     
         JiveGlobals.setProperty("llama.port", port);   
@@ -89,39 +92,7 @@
                     <input type="checkbox" name="cache_prompt"<%= (JiveGlobals.getProperty("llama.cache.prompt", "true").equals("true")) ? " checked" : "" %>>
                     <fmt:message key="config.page.configuration.cache.prompt" />       
                 </td>  
-            </tr>			
-            <tr>
-                <td align="left" width="150">
-                    <fmt:message key="config.page.configuration.username"/>
-                </td>
-                <td><input type="text" size="100" maxlength="100" name="username" required
-                       value="<%= JiveGlobals.getProperty("llama.username", "llama") %>">
-                </td>
-            </tr>   
-            <tr>
-                <td align="left" width="150">
-                    <fmt:message key="config.page.configuration.password"/>
-                </td>
-                <td><input type="password" size="100" maxlength="100" name="password" required
-                       value="<%= JiveGlobals.getProperty("llama.password", "llama") %>">
-                </td>
-            </tr>              
-            <tr>
-                <td align="left" width="150">
-                    <fmt:message key="config.page.configuration.alias"/>
-                </td>
-                <td><input type="text" size="100" maxlength="100" name="alias" required
-                       value="<%= JiveGlobals.getProperty("llama.alias", "LLaMA") %>">
-                </td>                               
-            </tr>                   
-            <tr>
-                <td align="left" width="150">
-                    <fmt:message key="config.page.configuration.port"/>
-                </td>
-                <td><input type="text" size="100" maxlength="100" name="port" required
-                       value="<%= JiveGlobals.getProperty("llama.port", plugin.getPort()) %>">
-                </td>                               
-            </tr>  
+            </tr>	
             <tr>
                 <td align="left" width="150">
                     <fmt:message key="config.page.configuration.model.url"/>
@@ -138,6 +109,46 @@
                        value="<%= JiveGlobals.getProperty("llama.system.prompt", plugin.getSystemPrompt()) %>">
                 </td>                               
             </tr>			
+            <tr>
+                <td align="left" width="150">
+                    <fmt:message key="config.page.configuration.username"/>
+                </td>
+                <td><input type="text" size="50" maxlength="100" name="username" required
+                       value="<%= JiveGlobals.getProperty("llama.username", "llama") %>">
+                </td>
+            </tr>   
+            <tr>
+                <td align="left" width="150">
+                    <fmt:message key="config.page.configuration.password"/>
+                </td>
+                <td><input type="password" size="50" maxlength="100" name="password" required
+                       value="<%= JiveGlobals.getProperty("llama.password", "llama") %>">
+                </td>
+            </tr>              
+            <tr>
+                <td align="left" width="150">
+                    <fmt:message key="config.page.configuration.alias"/>
+                </td>
+                <td><input type="text" size="50" maxlength="100" name="alias" required
+                       value="<%= JiveGlobals.getProperty("llama.alias", "LLaMA") %>">
+                </td>                               
+            </tr> 
+            <tr>
+                <td align="left" width="150">
+                    <fmt:message key="config.page.configuration.host"/>
+                </td>
+                <td><input type="text" size="50" maxlength="100" name="host" required
+                       value="<%= JiveGlobals.getProperty("llama.host", plugin.getIpAddress()) %>">
+                </td>                               
+            </tr> 			
+            <tr>
+                <td align="left" width="150">
+                    <fmt:message key="config.page.configuration.port"/>
+                </td>
+                <td><input type="text" size="50" maxlength="100" name="port" required
+                       value="<%= JiveGlobals.getProperty("llama.port", plugin.getPort()) %>">
+                </td>                               
+            </tr>  			
             <tr>
                 <td align="left" width="150">
                     <fmt:message key="config.page.configuration.predictions"/>

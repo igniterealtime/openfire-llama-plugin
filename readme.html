@@ -22,6 +22,7 @@
 <li><a href="#installation">Installation</a></li>
 <li><a href="#configuration">Configuration</a></li>
 <li><a href="#how-to-use">How to use</a></li>
+<li><a href="#advanced-configuration">Advanced Configuration</a></li>
 </ul>
 </li>
 </ul>
@@ -49,6 +50,8 @@ This plugin is a wrapper to llama.cpp server binary. It uses the HTTP API to cre
 <p>This is Openfire username/password for the user that will act as a chatbot for LLaMA. By default the user will be “llama” and the password witll be a random string. If you are using ldap or your Openfire user manager is in read-only mode and a new user cannot be created, then you must create the user and specify the username and password here…</p>
 <h3 id="alias">Alias</h3>
 <p>Set an alias for the model. The alias will be returned in chat responses.</p>
+<h3 id="host">Bind IP Address/Hostname</h3>
+<p>Set the IP address to bind to. Default: localhost (127.0.0.1)</p>
 <h3 id="port">Port</h3>
 <p>Set the port to listen. Default: 8080</p>
 <h3 id="model-url">Model URL</h3>
@@ -66,8 +69,8 @@ The first time the plugin starts, it will download this file and cache in OPENFI
 <p>Limit the next token selection to a subset of tokens with a cumulative probability above a threshold P (default: 0.95).</p>
 <h2 id="how-to-use">How to use</h2>
 <img src="https://igniterealtime.github.io/openfire-llama-plugin/llama-test.png">
-To confirm that llama.cpp is working, use the demo web app to test.
-The plugin will create an Openfire users called llama (by default). The user can be engaged with in chat or groupchats from any XMPP client application like Spark, Converse or Conversations.
+<p>To confirm that llama.cpp is working, use the demo web app to test.</p>
+<p>The plugin will create an Openfire user called llama (by default). The user can be engaged with in chat or groupchats from any XMPP client application like Spark, Converse or Conversations.</p>
 <h3 id="chat">Chat</h3>
 <p>Add llama as a contact and start a chat conversation</p>
 <pre><code>(22:20) Seye: what are female goats called?
@@ -79,6 +82,12 @@ The plugin will create an Openfire users called llama (by default). The user can
 (22:19) LLaMA:   Oh my llama-ness! I'm so glad you asked! A radiogram (also known as a wireless gram) is an old-fashioned term for a message or telegram that is sent via radio communication.
 </code></pre>
 <p>Note that this only works with group-chats hosted in your Openfire server. Federation is not supported.</p>
+<h2 id="advanced-configuration">Advanced Configuration</h2>
+<h3 id="gguf-model-files">GGUF Model files</h3>
+<p>The gguf model files for LLaMA 2 are large 5GB+ and may take serveral minutes to download. The downloaded model file is cached as OPENFIRE_HOME/llama/llama.model.gguf.<br>
+To speed up this process, you can preload the model by copying a local file to this destination and rename accordingly before installing the plugin.</p>
+<h3 id="gpu-support">GPU Support</h3>
+<p>The plugin has generic binaries for Linux64 and Windows64 with no GPU support. In order add GPU support, build the llama.cpp server binary with the appropriate GPU configuration and replace in the OPENFIRE_HOME/plugins/llama/classes/linux-64 or OPENFIRE_HOME/plugins/llama/classes/win-64 folder after installing the plugin or replace in the source code and rebuild plugin with maven.</p>
 
     </div>
   </div>

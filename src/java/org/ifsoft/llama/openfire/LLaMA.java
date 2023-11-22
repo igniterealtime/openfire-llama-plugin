@@ -80,10 +80,11 @@ public class LLaMA implements Plugin, PropertyEventListener, ProcessListener, MU
     private ExecutorService executor;
     private WebAppContext jspService;
 	private LLaMAConnection llamaConnection = null;
+	private static final String domain = XMPPServer.getInstance().getServerInfo().getXMPPDomain();
+	private static final String hostname = XMPPServer.getInstance().getServerInfo().getHostname();	
 	
     public static LLaMA self;	
-	public static int numThreads = 8;
-	private final String domain = XMPPServer.getInstance().getServerInfo().getXMPPDomain();		
+	public static int numThreads = 8;	
 	
     public void destroyPlugin() {
         PropertyEventDispatcher.removeListener(this);
@@ -143,15 +144,14 @@ public class LLaMA implements Plugin, PropertyEventListener, ProcessListener, MU
     }
 
     public static String getUrl() {
-        return "https://" + XMPPServer.getInstance().getServerInfo().getHostname() + ":" + JiveGlobals.getProperty("httpbind.port.secure", "7443");
+        return "https://" + hostname + ":" + JiveGlobals.getProperty("httpbind.port.secure", "7443");
     }
 
     public static String getIpAddress() {
-        String ourHostname = XMPPServer.getInstance().getServerInfo().getHostname();
         String ourIpAddress = "127.0.0.1";
 
         try {
-            ourIpAddress = InetAddress.getByName(ourHostname).getHostAddress();
+            ourIpAddress = InetAddress.getByName(hostname).getHostAddress();
         } catch (Exception e) {
 
         }
@@ -270,8 +270,9 @@ public class LLaMA implements Plugin, PropertyEventListener, ProcessListener, MU
             createLLaMAUser();
 						
 			try {
-				final String llamaPort = JiveGlobals.getProperty("llama.port", LLaMA.self.getPort());					
-				final String params = "-a " + alias + " -m " + filename + " -c 2048 --path . --port " + llamaPort + " -np " + numThreads;			
+				final String llamaHost = JiveGlobals.getProperty("llama.host", getIpAddress());					
+				final String llamaPort = JiveGlobals.getProperty("llama.port", LLaMA.self.getPort());				
+				final String params = "--host " + llamaHost + " -a " + alias + " -m " + filename + " -c 2048 --path . --port " + llamaPort + " -np " + numThreads;			
 				llamaThread = Spawn.startProcess(llamaExePath + " " + params, new File(llamaHomePath), this);
 				
 				Thread.sleep(1000);
@@ -331,7 +332,7 @@ public class LLaMA implements Plugin, PropertyEventListener, ProcessListener, MU
         final UserManager userManager = XMPPServer.getInstance().getUserManager();
         final String llamaUser = JiveGlobals.getProperty("llama.username", "llama");
 
-        if ( !userManager.isRegisteredUser( new JID(llamaUser + "@" + XMPPServer.getInstance().getServerInfo().getXMPPDomain()), false ) )
+        if ( !userManager.isRegisteredUser( new JID(llamaUser + "@" + domain), false ) )
         {
             Log.info( "No LLaMA user detected. Generating one." );
 

@@ -54,19 +54,21 @@ public class LLaMAConnection extends VirtualConnection
     private ConnectionConfiguration configuration;	
     private ConnectionType connectionType;	
 	private String username;
+	private String port;
 	private AuthToken authToken = null;
     private LocalClientSession session;	
-	private String llamaUrl;
     private ExecutorService exec = Executors.newFixedThreadPool(LLaMA.numThreads);	
+	
 	private final String domain = XMPPServer.getInstance().getServerInfo().getXMPPDomain();
+	private final String hostname = XMPPServer.getInstance().getServerInfo().getHostname();
 
     public String remoteAddr;	
 	
 
     public LLaMAConnection(String username, String port) {
 		this.username = username;
+		this.port = port;
 		this.remoteAddr = "llama-" + System.currentTimeMillis();
-		this.llamaUrl = "http://localhost:" + port;
 		
 		try {
 			
@@ -203,7 +205,7 @@ public class LLaMAConnection extends VirtualConnection
 
 				Presence presence = new Presence();
 				presence.setTo(muc + "/" + username);	
-				presence.setFrom(username + "@" + XMPPServer.getInstance().getServerInfo().getXMPPDomain() + "/" + remoteAddr);	
+				presence.setFrom(username + "@" + domain + "/" + remoteAddr);	
 				presence.addChildElement("x", "http://jabber.org/protocol/muc");				
 				XMPPServer.getInstance().getPresenceRouter().route(presence);					
 			}
@@ -269,20 +271,21 @@ public class LLaMAConnection extends VirtualConnection
     //-------------------------------------------------------	
 
 	private void getJson(String urlToRead, JSONObject data, JID requestor, Message.Type chatType)  {
-		Log.info("getJson from LLaMA " + requestor + " " + urlToRead + "\n" + data);
-			
 		URL url;
 		HttpURLConnection conn;
 		BufferedReader rd;
 		String line;
 		StringBuilder result = new StringBuilder();
 
+		String llamaHost = JiveGlobals.getProperty("llama.host", hostname);			
 		String username = JiveGlobals.getProperty("llama.username", "llama");
 		String password = JiveGlobals.getProperty("llama.password", "llama");		
 		String auth = username + ":" + password;
 		String authHeaderValue = "Basic " + Base64.getEncoder().encodeToString(auth.getBytes(StandardCharsets.UTF_8));
-		String uri = llamaUrl + urlToRead;
-
+		String uri = "http://" + llamaHost + ":" + port + urlToRead;
+		
+		Log.info("getJson from LLaMA " + requestor + " " + uri + "\n" + data);
+		
 		try {
 			url = new URL(uri);
 			conn = (HttpURLConnection) url.openConnection();

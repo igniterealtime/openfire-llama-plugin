@@ -29,6 +29,9 @@ This is Openfire username/password for the user that will act as a chatbot for L
 ### Alias
 Set an alias for the model. The alias will be returned in chat responses.
 
+### Bind IP Address/Hostname
+Set the IP address to bind to. Default: localhost (127.0.0.1)
+
 ### Port
 Set the port to listen. Default: 8080
 
@@ -56,7 +59,7 @@ Limit the next token selection to a subset of tokens with a cumulative probabili
 
 To confirm that llama.cpp is working, use the demo web app to test.
 
-The plugin will create an Openfire users called llama (by default). The user can be engaged with in chat or groupchats from any XMPP client application like Spark, Converse or Conversations.
+The plugin will create an Openfire user called llama (by default). The user can be engaged with in chat or groupchats from any XMPP client application like Spark, Converse or Conversations.
 
 ### Chat
 Add llama as a contact and start a chat conversation
@@ -71,3 +74,12 @@ Start as chat message with the LLaMA username (llama) and LLaMA will join the gr
 (22:19) LLaMA:   Oh my llama-ness! I'm so glad you asked! A radiogram (also known as a wireless gram) is an old-fashioned term for a message or telegram that is sent via radio communication.
 ````
 Note that this only works with group-chats hosted in your Openfire server. Federation is not supported.
+
+## Advanced Configuration
+
+### GGUF Model files
+The gguf model files for LLaMA 2 are large 5GB+ and may take serveral minutes to download. The downloaded model file is cached as OPENFIRE_HOME/llama/llama.model.gguf.
+To speed up this process, you can preload the model by copying a local file to this destination and rename accordingly before installing the plugin.
+
+### GPU Support
+The plugin has generic binaries for Linux64 and Windows64 with no GPU support. In order add GPU support, build the llama.cpp server binary with the appropriate GPU configuration and replace in the OPENFIRE_HOME/plugins/llama/classes/linux-64 or OPENFIRE_HOME/plugins/llama/classes/win-64 folder after installing the plugin or replace in the source code and rebuild plugin with maven.
