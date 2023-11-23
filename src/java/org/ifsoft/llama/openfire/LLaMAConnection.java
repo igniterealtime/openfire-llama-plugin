@@ -214,7 +214,7 @@ public class LLaMAConnection extends VirtualConnection
 				String from = packet.getFrom().getNode();
 				String msg = message.getBody();
 				
-				if (!isNull(msg) && !isNull(from) && SessionManager.getInstance().getSessions(from).size() > 0) 
+				if (!isNull(msg) && !isNull(from) /*&& SessionManager.getInstance().getSessions(from).size() > 0*/) 
 				{
 					handlePrediction(msg, packet.getFrom(), message.getType());
 				}					
