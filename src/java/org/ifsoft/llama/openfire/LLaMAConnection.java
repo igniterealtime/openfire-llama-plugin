@@ -115,7 +115,7 @@ public class LLaMAConnection extends VirtualConnection
 				}
 				JSONObject systemPrompt = new JSONObject();
 				systemPrompt.put("prompt", JiveGlobals.getProperty("llama.system.prompt", LLaMA.getSystemPrompt()));
-				systemPrompt.put("anti_prompt", "/stop");				
+				systemPrompt.put("anti_prompt", "User:");				
 				systemPrompt.put("assistant_name", alias);					
 				
 				JSONObject testData = new JSONObject();
@@ -175,8 +175,9 @@ public class LLaMAConnection extends VirtualConnection
     public void deliver(Packet packet) throws UnauthorizedException {	
 		// auto accept presence subscriptions
 		
-        if (packet instanceof Presence) {
-			Presence presence = (Presence) packet;			
+        if (packet instanceof Presence) {		
+			Presence presence = (Presence) packet;	
+			Log.debug("Incoming Presence " + packet.getFrom() + " " + presence.getType());				
 			
 			if (presence.getType() == Presence.Type.subscribe) {
 				Presence presence1 = new Presence();
