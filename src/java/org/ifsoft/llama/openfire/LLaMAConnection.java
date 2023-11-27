@@ -172,7 +172,30 @@ public class LLaMAConnection extends VirtualConnection
     }
 
     @Override
-    public void deliver(Packet packet) throws UnauthorizedException {		
+    public void deliver(Packet packet) throws UnauthorizedException {	
+		// auto accept presence subscriptions
+		
+        if (packet instanceof Presence) {
+			Presence presence = (Presence) packet;			
+			
+			if (presence.getType() == Presence.Type.subscribe) {
+				Presence presence1 = new Presence();
+				presence1.setTo(packet.getFrom());	
+				presence1.setFrom(username + "@" + domain + "/" + remoteAddr);
+				presence1.setType(Presence.Type.subscribed);
+				XMPPServer.getInstance().getPresenceRouter().route(presence1);	
+
+				Presence presence2 = new Presence();
+				presence2.setTo(packet.getFrom());	
+				presence2.setFrom(username + "@" + domain + "/" + remoteAddr);
+				presence2.setType(Presence.Type.subscribe);
+				XMPPServer.getInstance().getPresenceRouter().route(presence2);					
+			}
+		}
+		else
+
+		// auto accept MUC invitations
+		
         if (packet instanceof Message) 
 		{		
 			Message message = (Message) packet;
@@ -220,7 +243,9 @@ public class LLaMAConnection extends VirtualConnection
 				}					
 			}
 		}
-		else if (packet instanceof IQ)  {
+		else 
+			
+		if (packet instanceof IQ)  {
 			IQ iq = (IQ) packet;
 			Log.debug("Incoming IQ " + packet.getFrom() + " " + iq.getType());			
 		}
