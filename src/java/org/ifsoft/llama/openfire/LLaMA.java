@@ -289,6 +289,7 @@ public class LLaMA implements Plugin, PropertyEventListener, ProcessListener, MU
 			try {
 				final String llamaHost = JiveGlobals.getProperty("llama.host", getIpAddress());					
 				final String llamaPort = JiveGlobals.getProperty("llama.port", LLaMA.self.getPort());				
+				//final String params = "-ngl 1 --host " + llamaHost + " -a " + alias + " -m " + filename + " -c 2048 --path . --port " + llamaPort + " -np " + numThreads;			
 				final String params = "--host " + llamaHost + " -a " + alias + " -m " + filename + " -c 2048 --path . --port " + llamaPort + " -np " + numThreads;			
 				llamaThread = Spawn.startProcess(llamaExePath + " " + params, new File(llamaHomePath), this);
 				
