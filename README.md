@@ -1,4 +1,6 @@
-## LLaMA
+<img src=https://igniterealtime.github.io/openfire-llama-plugin/llama.png>
+
+# LLaMA
 AI Inference engine for Openfire using LLaMA.
 This plugin is a wrapper to llama.cpp server binary. It uses the HTTP API to create a chatbot in Openfire which will engage in XMPP chat and groupchat conversations.
 
