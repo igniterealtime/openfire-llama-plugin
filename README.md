@@ -82,11 +82,11 @@ Add llama as a contact and start a chat conversation
 (22:20) LLaMA:   Female goats are called does.
 ````
 ### Group Chat
-Start as chat message with the LLaMA username (llama) and LLaMA will join the groupchat and respond to the message typed. 
-````
-(22:19) Seye: llama, what is a radiogram?
-(22:19) LLaMA:   Oh my llama-ness! I'm so glad you asked! A radiogram (also known as a wireless gram) is an old-fashioned term for a message or telegram that is sent via radio communication.
-````
+You can invite llama to join a groupchat and it will auto-accept. Type any groupchat message that starts with llama's name (llama default) and it will respond. All other messages will be ignored. 
+
+![image](https://github.com/igniterealtime/openfire-llama-plugin/assets/110731/f5f59014-d7ec-45d3-846a-97d20c8b628e)
+
+If a message is typed in any chat room locally and it starts with the llama name (llama by default), then it will auto join the room and respond the instruction or query.
 Note that this only works with group-chats hosted in your Openfire server. Federation is not supported.
 
 ## Advanced Configuration
