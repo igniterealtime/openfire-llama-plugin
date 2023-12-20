@@ -261,7 +261,19 @@ public class LLaMAConnection extends VirtualConnection
 				
 				if (!isNull(msg) && !isNull(from) /*&& SessionManager.getInstance().getSessions(from).size() > 0*/) 
 				{
-					handlePrediction(msg, packet.getFrom(), message.getType());
+					JID requestor = packet.getFrom();
+					
+					if (message.getType() == Message.Type.groupchat) {
+						final String llamaUser = JiveGlobals.getProperty("llama.username", "llama");
+						
+						if (msg.toLowerCase().startsWith(llamaUser.toLowerCase())) {
+							requestor = new JID(packet.getFrom().toBareJID());
+							handlePrediction(msg, requestor, message.getType());							
+						}
+						
+					} else {
+						handlePrediction(msg, requestor, message.getType());
+					}
 				}					
 			}
 		}

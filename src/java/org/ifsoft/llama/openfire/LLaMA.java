@@ -447,7 +447,7 @@ public class LLaMA implements Plugin, PropertyEventListener, ProcessListener, MU
 						Thread.sleep(1000);					
 					}	
 
-					llamaConnection.handlePrediction(body, roomJID, message.getType());	
+					//llamaConnection.handlePrediction(body, roomJID, message.getType());	
 				}
 			} catch (Exception e) {
 				Log.error("unable to handle groupchat message", e);
