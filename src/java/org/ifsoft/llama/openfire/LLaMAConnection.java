@@ -281,7 +281,10 @@ public class LLaMAConnection extends VirtualConnection
 			
 		if (packet instanceof IQ)  {
 			IQ iq = (IQ) packet;
-			Log.debug("Incoming IQ " + packet.getFrom() + " " + iq.getType());			
+			Log.debug("Incoming IQ " + packet.getFrom() + " " + iq.getType());	
+
+			IQ reply = IQ.createResultIQ(iq);
+			XMPPServer.getInstance().getRoutingTable().routePacket(packet.getFrom(), reply, true);				
 		}
     }
 
