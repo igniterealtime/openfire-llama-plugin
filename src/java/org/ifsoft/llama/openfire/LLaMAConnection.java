@@ -194,7 +194,8 @@ public class LLaMAConnection extends VirtualConnection
 
     @Override
     public void deliver(Packet packet) throws UnauthorizedException {	
-		// auto accept presence subscriptions
+		final String llamaUser = JiveGlobals.getProperty("llama.username", "llama");
+		final String alias = JiveGlobals.getProperty("llama.alias", "LLaMA");		
 		
         if (packet instanceof Presence) {		
 			Presence presence = (Presence) packet;	
@@ -249,7 +250,7 @@ public class LLaMAConnection extends VirtualConnection
 				Log.debug("Auto-accept MUC invitation " + muc);	
 
 				Presence presence = new Presence();
-				presence.setTo(muc + "/" + username);	
+				presence.setTo(muc + "/" + alias);	
 				presence.setFrom(username + "@" + domain + "/" + remoteAddr);	
 				presence.addChildElement("x", "http://jabber.org/protocol/muc");				
 				XMPPServer.getInstance().getPresenceRouter().route(presence);					
@@ -257,14 +258,13 @@ public class LLaMAConnection extends VirtualConnection
 			else {						
 				Log.debug("Incoming Message " + packet.getFrom() + "\n" + message.getBody());
 				String from = packet.getFrom().getNode();
+				String nick = packet.getFrom().getResource();				
 				String msg = message.getBody();
 				
-				if (!isNull(msg) && !isNull(from) /*&& SessionManager.getInstance().getSessions(from).size() > 0*/) 
-				{
+				if (!isNull(msg) && !isNull(from) && nick != null && !nick.equals(alias)) {
 					JID requestor = packet.getFrom();
 					
 					if (message.getType() == Message.Type.groupchat) {
-						final String llamaUser = JiveGlobals.getProperty("llama.username", "llama");
 						
 						if (msg.toLowerCase().startsWith(llamaUser.toLowerCase())) {
 							requestor = new JID(packet.getFrom().toBareJID());
