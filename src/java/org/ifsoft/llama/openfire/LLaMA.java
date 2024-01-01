@@ -119,7 +119,7 @@ public class LLaMA implements Plugin, PropertyEventListener, ProcessListener, MU
 			if (llamaHosted) {
 				createLLaMAUser();	
 				loginLLaMAUser(true);
-				llamaConnection.handlePrediction("what is your name?", null, null);					
+				llamaConnection.handlePrediction("what is your name?", null, null, null);					
 			} else {
 				setupLLaMA(pluginDirectory);
 			}
@@ -181,7 +181,7 @@ public class LLaMA implements Plugin, PropertyEventListener, ProcessListener, MU
 		if (line.contains("HTTP server listening") && llamaConnection != null) {
 			Log.info("Sending test data to LLaMA");
 			
-			llamaConnection.handlePrediction("what is your name?", null, null);			
+			llamaConnection.handlePrediction("what is your name?", null, null, null);			
 		}
     }
 
@@ -447,7 +447,7 @@ public class LLaMA implements Plugin, PropertyEventListener, ProcessListener, MU
 						Thread.sleep(1000);					
 					}	
 
-					//llamaConnection.handlePrediction(body, roomJID, message.getType());	
+					//llamaConnection.handlePrediction(body, roomJID, message.getType(), null);	
 				}
 			} catch (Exception e) {
 				Log.error("unable to handle groupchat message", e);

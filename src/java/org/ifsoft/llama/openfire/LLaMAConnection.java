@@ -112,7 +112,7 @@ public class LLaMAConnection extends VirtualConnection
 		}		
     }
 	
-	public void handlePrediction(final String prompt, final JID requestor, final Message.Type chatType) {
+	public void handlePrediction(final String prompt, final JID requestor, final Message.Type chatType, final IQ reply) {
 		exec.execute(new Runnable() {
 			public void run() {
 				long threadId = Thread.currentThread().getId()% LLaMA.numThreads;
@@ -125,32 +125,44 @@ public class LLaMAConnection extends VirtualConnection
 						"assistant_name": "Assistant:"
 					}
 				*/	
-				double temperature = 0.5;
-				double top_p = 0.9;
 				
 				try {
-					temperature = Double.parseDouble(JiveGlobals.getProperty("llama.temperature", "0.5"));
-					top_p = Double.parseDouble(JiveGlobals.getProperty("llama.top.p.sampling", "0.9"));
+					JSONObject testData = new JSONObject();						
+					double temperature = Double.parseDouble(JiveGlobals.getProperty("llama.temperature", "0.5"));
+					double top_p = Double.parseDouble(JiveGlobals.getProperty("llama.top.p.sampling", "0.9"));
+					
+					JSONObject systemPrompt = new JSONObject();
+					systemPrompt.put("prompt", JiveGlobals.getProperty("llama.system.prompt", LLaMA.getSystemPrompt()));
+					systemPrompt.put("anti_prompt", "User:");				
+					systemPrompt.put("assistant_name", alias);					
+					
+					testData.put("system_prompt", systemPrompt);
+					testData.put("prompt", JiveGlobals.getProperty("llama.prefix.prompt", "[INST]") + prompt + JiveGlobals.getProperty("llama.postfix.prompt", "[/INST]"));				
+					testData.put("n_predict", JiveGlobals.getIntProperty("llama.predictions", 256));
+					testData.put("stream", true);
+					testData.put("cache_prompt", JiveGlobals.getBooleanProperty("llama.cache.prompt", true));				
+					testData.put("slot_id", threadId);				
+					testData.put("temperature", temperature);
+					testData.put("top_k", JiveGlobals.getIntProperty("llama.top.k.sampling", 40));
+					testData.put("top_p", top_p);
+					
+								
+					if (reply != null) {
+						final String response = getJson("/completion", testData, null, null);					
+						reply.setChildElement("response", "urn:xmpp:gen-ai:0").setText(response);	
+						XMPPServer.getInstance().getRoutingTable().routePacket(reply.getTo(), reply, true);					
+					} 
+					else {
+						getJson("/completion", testData, requestor, chatType);	
+					}					
+				
 				} catch (Exception e) {
-					Log.error("Unable to set temperature or top_p", e);
-				}
-				JSONObject systemPrompt = new JSONObject();
-				systemPrompt.put("prompt", JiveGlobals.getProperty("llama.system.prompt", LLaMA.getSystemPrompt()));
-				systemPrompt.put("anti_prompt", "User:");				
-				systemPrompt.put("assistant_name", alias);					
-				
-				JSONObject testData = new JSONObject();
-				testData.put("system_prompt", systemPrompt);
-				testData.put("prompt", "[INST]" + prompt + "[/INST]");				
-				testData.put("n_predict", JiveGlobals.getIntProperty("llama.predictions", 256));
-				testData.put("stream", true);
-				testData.put("cache_prompt", JiveGlobals.getBooleanProperty("llama.cache.prompt", true));				
-				testData.put("slot_id", threadId);				
-				testData.put("temperature", temperature);
-				testData.put("top_k", JiveGlobals.getIntProperty("llama.top.k.sampling", 40));
-				testData.put("top_p", top_p);				
-				
-				getJson("/completion", testData, requestor, chatType);
+					Log.error("Unable to run infer prompt", e);
+					
+					if (reply != null) {
+						reply.setError(new PacketError(PacketError.Condition.internal_server_error, PacketError.Type.modify, e.toString()));
+					}					
+				}				
 			}
 		});			
 	}
@@ -268,11 +280,11 @@ public class LLaMAConnection extends VirtualConnection
 						
 						if (msg.toLowerCase().startsWith(llamaUser.toLowerCase())) {
 							requestor = new JID(packet.getFrom().toBareJID());
-							handlePrediction(msg, requestor, message.getType());							
+							handlePrediction(msg, requestor, message.getType(), null);							
 						}
 						
 					} else {
-						handlePrediction(msg, requestor, message.getType());
+						handlePrediction(msg, requestor, message.getType(), null);
 					}
 				}					
 			}
@@ -283,8 +295,17 @@ public class LLaMAConnection extends VirtualConnection
 			IQ iq = (IQ) packet;
 			Log.debug("Incoming IQ " + packet.getFrom() + " " + iq.getType());	
 
-			IQ reply = IQ.createResultIQ(iq);
-			XMPPServer.getInstance().getRoutingTable().routePacket(packet.getFrom(), reply, true);				
+			if (iq.getType() != IQ.Type.result) {
+				IQ reply = IQ.createResultIQ(iq);
+				final Element element = iq.getChildElement();
+						
+				if (element != null && element.getNamespaceURI().equals("urn:xmpp:gen-ai:0")) {
+					handlePrediction(element.getText(), null, null, reply);
+					return;
+				}				
+
+				XMPPServer.getInstance().getRoutingTable().routePacket(packet.getFrom(), reply, true);	
+			}				
 		}
     }
 
@@ -332,11 +353,12 @@ public class LLaMAConnection extends VirtualConnection
     //
     //-------------------------------------------------------	
 
-	private void getJson(String urlToRead, JSONObject data, JID requestor, Message.Type chatType)  {
+	private String getJson(String urlToRead, JSONObject data, JID requestor, Message.Type chatType)  {
 		URL url;
 		HttpURLConnection conn;
 		BufferedReader rd;
 		String line;
+		String accumulator = "";
 		StringBuilder result = new StringBuilder();
 
 		String llamaHost = JiveGlobals.getProperty("llama.host", hostname);			
@@ -385,6 +407,7 @@ public class LLaMAConnection extends VirtualConnection
 							
 							if (requestor != null && !isNull(msg)) {
 								replyChat(msg, requestor, chatType);
+								accumulator = accumulator + msg;
 							}
 							
 						} else {
@@ -401,7 +424,8 @@ public class LLaMAConnection extends VirtualConnection
 						Log.info("getJson - chat\n" + msg);
 						
 						if (requestor != null) {
-							replyChat(msg, requestor, chatType);						
+							replyChat(msg, requestor, chatType);	
+							accumulator = accumulator + msg;							
 						}
 					}
 				} else {
@@ -414,6 +438,7 @@ public class LLaMAConnection extends VirtualConnection
 		} catch (Exception e) {
 			Log.error("getJson", e);
 		}
+		return accumulator;
 	}
 
 	private void replyState(String state, JID requestor, Message.Type chatType) {
