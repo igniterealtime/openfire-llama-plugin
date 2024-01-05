@@ -399,7 +399,8 @@ public class LLaMAConnection extends VirtualConnection
 					
 					if (!lineJson.getBoolean("stop")) {	// we got a text stream
 						String content = lineJson.getString("content");
-						
+						result.append(content);
+							
 						if (content.equals("\n")) {
 							String msg = result.toString();
 							Log.info("getJson - chat\n" + msg);	
@@ -411,7 +412,6 @@ public class LLaMAConnection extends VirtualConnection
 							}
 							
 						} else {
-							result.append(content);
 							
 							if (requestor != null) {
 								replyState("composing", requestor, chatType);
@@ -427,9 +427,7 @@ public class LLaMAConnection extends VirtualConnection
 							replyChat(msg, requestor, chatType);	
 							accumulator = accumulator + msg;							
 						}
-					}
-				} else {
-						
+					}		
 				}
 			}
 			rd.close();	
