@@ -7,7 +7,7 @@
     <version>${project.version}</version>
     <licenseType>Apache 2.0</licenseType>
     <date>2023-12-31</date>
-    <minServerVersion>4.7.5</minServerVersion>
+    <minServerVersion>4.6.0</minServerVersion>
 
    <adminconsole> 
         <tab id="tab-webclients" name="${admin.sidebar.webclients.name}" description="${admin.sidebar.webclients.description}" url="llama-settings.jsp">
