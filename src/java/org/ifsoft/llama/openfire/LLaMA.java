@@ -136,7 +136,7 @@ public class LLaMA implements Plugin, PropertyEventListener, ProcessListener, MU
     }
 
     public static String getModelPath() {
-        return (JiveGlobals.getHomeDirectory() + File.separator + "llama").replace("\\", "/");
+        return (JiveGlobals.getHomePath().resolve("llama").toString()).replace("\\", "/");
     }
 
     public static String getHostedUrl() {

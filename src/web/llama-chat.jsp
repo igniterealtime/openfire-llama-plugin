@@ -49,7 +49,7 @@
 <meta name="pageID" content="llama-chat"/>
 <style type="text/css">
     #jive-main table, #jive-main-content {
-        height: 92%;
+        height: 600px;
     }
 </style>
 </head>

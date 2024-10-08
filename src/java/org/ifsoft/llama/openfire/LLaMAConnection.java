@@ -22,6 +22,8 @@ import java.io.*;
 import java.net.*;
 import java.nio.charset.*;
 
+import javax.annotation.Nullable;
+
 import org.dom4j.Namespace;
 import org.jivesoftware.openfire.*;
 import org.jivesoftware.openfire.nio.OfflinePacketDeliverer;
@@ -88,7 +90,7 @@ public class LLaMAConnection extends VirtualConnection
 			
 			IQ iq = new IQ();
 			iq.setFrom(username + "@" + domain + "/" + remoteAddr);
-			iq.setTo(domain);			
+			iq.setTo(username + "@" + domain);			
 			iq.setType(IQ.Type.set);				
 				
 			Element child = iq.setChildElement("vCard", "vcard-temp");
@@ -150,7 +152,7 @@ public class LLaMAConnection extends VirtualConnection
 					if (reply != null) {
 						final String response = getJson("/completion", testData, null, null);					
 						reply.setChildElement("response", "urn:xmpp:gen-ai:0").setText(response);	
-						XMPPServer.getInstance().getRoutingTable().routePacket(reply.getTo(), reply, true);					
+						XMPPServer.getInstance().getRoutingTable().routePacket(reply.getTo(), reply);					
 					} 
 					else {
 						getJson("/completion", testData, requestor, chatType);	
@@ -178,11 +180,21 @@ public class LLaMAConnection extends VirtualConnection
 	public JID getJid() {
 		return session.getAddress();
 	}
+
+    @Override	
+    public void closeVirtualConnection(@Nullable StreamError streamError) {
+		exec.shutdown();
+	}	
 	
     @Override
-    public void closeVirtualConnection() {
-		exec.shutdown();
-    }
+    public Optional<String> getTLSProtocolName() {
+        return this.session != null ? Optional.of(this.session.getTLSProtocolName()) : Optional.of("unknown");
+    }	
+	
+    @Override
+    public Optional<String> getCipherSuiteName() {
+        return this.session != null ? Optional.of(this.session.getCipherSuiteName()) : Optional.of("unknown");
+    }	
 
     @Override
     public byte[] getAddress() {
@@ -304,7 +316,7 @@ public class LLaMAConnection extends VirtualConnection
 					return;
 				}				
 
-				XMPPServer.getInstance().getRoutingTable().routePacket(packet.getFrom(), reply, true);	
+				XMPPServer.getInstance().getRoutingTable().routePacket(packet.getFrom(), reply);	
 			}				
 		}
     }
@@ -312,16 +324,6 @@ public class LLaMAConnection extends VirtualConnection
     @Override
     public void deliverRawText(String text) {
 		Log.debug("deliverRawText\n" + text);	
-    }
-
-    @Override
-    public boolean validate() {
-        return true;
-    }
-
-    @Override
-    public boolean isSecure() {
-        return false;
     }
 
     @Override
@@ -448,7 +450,7 @@ public class LLaMAConnection extends VirtualConnection
 		newMessage.setType(chatType);
         newMessage.addExtension(new PacketExtension(state, "http://jabber.org/protocol/chatstates"));		
 		
-		XMPPServer.getInstance().getRoutingTable().routePacket(requestor, newMessage, true);				
+		XMPPServer.getInstance().getRoutingTable().routePacket(requestor, newMessage);				
 	}
 	
 	private void replyRtt(String msg, JID requestor, Message.Type chatType, long seq) {
@@ -467,7 +469,7 @@ public class LLaMAConnection extends VirtualConnection
 		t.setText(msg);
         newMessage.addExtension(new PacketExtension(rtt));		
 		
-		XMPPServer.getInstance().getRoutingTable().routePacket(requestor, newMessage, true);	
+		XMPPServer.getInstance().getRoutingTable().routePacket(requestor, newMessage);	
 	}	
 	
 	private void replyChat(String msg, JID requestor, Message.Type chatType) {
@@ -480,7 +482,7 @@ public class LLaMAConnection extends VirtualConnection
 		newMessage.setBody(msg);
         newMessage.addExtension(new PacketExtension("active", "http://jabber.org/protocol/chatstates"));		
 		
-		XMPPServer.getInstance().getRoutingTable().routePacket(requestor, newMessage, true);				
+		XMPPServer.getInstance().getRoutingTable().routePacket(requestor, newMessage);				
 	}
 	
     private boolean isNull(String value)   {
