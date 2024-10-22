@@ -408,10 +408,13 @@ public class LLaMAConnection extends VirtualConnection
 							Log.info("getJson - chat\n" + msg);	
 							result = new StringBuilder();	
 							
-							if (requestor != null && !isNull(msg)) {
-								replyChat(msg, requestor, chatType);
+							if (!isNull(msg)) {
 								accumulator = accumulator + msg;
-							}
+								
+								if (requestor != null && !isNull(msg)) {
+									replyChat(msg, requestor, chatType);
+								}
+							}								
 							
 						} else {
 							
@@ -423,11 +426,14 @@ public class LLaMAConnection extends VirtualConnection
 						}
 					} else {	// end of text stream
 						String msg = result.toString();
-						Log.info("getJson - chat\n" + msg);
+						Log.info("getJson - final chat\n" + msg);
 						
-						if (requestor != null) {
-							replyChat(msg, requestor, chatType);	
-							accumulator = accumulator + msg;							
+						if (!isNull(msg)) {						
+							accumulator = accumulator + msg;						
+							
+							if (requestor != null) {
+								replyChat(msg, requestor, chatType);								
+							}
 						}
 					}		
 				}
