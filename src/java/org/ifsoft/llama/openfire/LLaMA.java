@@ -45,7 +45,6 @@ import org.jivesoftware.util.PropertyEventDispatcher;
 import org.jivesoftware.util.PropertyEventListener;
 import org.jivesoftware.util.StringUtils;
 
-/*
 import org.eclipse.jetty.apache.jsp.JettyJasperInitializer;
 import org.eclipse.jetty.plus.annotation.ContainerInitializer;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
@@ -64,9 +63,6 @@ import org.apache.tomcat.SimpleInstanceManager;
 import org.eclipse.jetty.util.security.*;
 import org.eclipse.jetty.security.*;
 import org.eclipse.jetty.security.authentication.*;
-*/
-
-import org.eclipse.jetty.ee8.webapp.WebAppContext;
 
 import java.lang.reflect.*;
 import java.util.*;
@@ -210,13 +206,11 @@ public class LLaMA implements Plugin, PropertyEventListener, ProcessListener, MU
         jspService.setClassLoader(this.getClass().getClassLoader());
         jspService.getMimeTypes().addMimeMapping("wasm", "application/wasm");
 
-		/*
         final List<ContainerInitializer> initializers = new ArrayList<>();
         initializers.add(new ContainerInitializer(new JettyJasperInitializer(), null));
         jspService.setAttribute("org.eclipse.jetty.containerInitializers", initializers);
         jspService.setAttribute(InstanceManager.class.getName(), new SimpleInstanceManager());
-		*/
-		
+
         Log.info("LLaMA jsp service enabled");
         HttpBindManager.getInstance().addJettyHandler(jspService);
     }
@@ -334,7 +328,12 @@ public class LLaMA implements Plugin, PropertyEventListener, ProcessListener, MU
         {
             llamaHomePath = pluginDirectory.getAbsolutePath() + File.separator + "classes";
 
-            if(OSUtils.IS_LINUX64)
+			if (OSUtils.IS_MAC64) {
+                llamaHomePath = llamaHomePath + File.separator + "macos-64";
+                llamaExePath = llamaHomePath + File.separator + "server";
+                makeFileExecutable(llamaExePath);				
+			}			
+            else if(OSUtils.IS_LINUX64)
             {
                 llamaHomePath = llamaHomePath + File.separator + "linux-64";
                 llamaExePath = llamaHomePath + File.separator + "server";
@@ -432,10 +431,10 @@ public class LLaMA implements Plugin, PropertyEventListener, ProcessListener, MU
 				final MUCRoom mucRoom = XMPPServer.getInstance().getMultiUserChatManager().getMultiUserChatService("conference").getChatRoom(room);		
 				boolean isOccupant = false;
 				
-				for (MUCOccupant occupant : mucRoom.getOccupants()) {
-					Log.info("matching room occupant " + occupant.getUserAddress() + " with " + llamaUser );
+				for (MUCRole role : mucRoom.getOccupants()) {
+					Log.info("matching room occupant " + role.getUserAddress() + " with " + llamaUser );
 					
-					if (occupant.getUserAddress().getNode().equals(llamaUser)) {
+					if (role.getUserAddress().getNode().equals(llamaUser)) {
 						isOccupant = true;	
 						break;
 					}
