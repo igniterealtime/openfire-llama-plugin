@@ -330,19 +330,19 @@ public class LLaMA implements Plugin, PropertyEventListener, ProcessListener, MU
 
 			if (OSUtils.IS_MAC64) {
                 llamaHomePath = llamaHomePath + File.separator + "macos-64";
-                llamaExePath = llamaHomePath + File.separator + "server";
+                llamaExePath = llamaHomePath + File.separator + "llama-server";
                 makeFileExecutable(llamaExePath);				
 			}			
             else if(OSUtils.IS_LINUX64)
             {
                 llamaHomePath = llamaHomePath + File.separator + "linux-64";
-                llamaExePath = llamaHomePath + File.separator + "server";
+                llamaExePath = llamaHomePath + File.separator + "llama-server";
                 makeFileExecutable(llamaExePath);
             }
             else if(OSUtils.IS_WINDOWS64)
             {
                 llamaHomePath = llamaHomePath + File.separator + "win-64";
-                llamaExePath = llamaHomePath + File.separator + "server.exe";
+                llamaExePath = llamaHomePath + File.separator + "llama-server.exe";
                 makeFileExecutable(llamaExePath);				
 
             } else {
